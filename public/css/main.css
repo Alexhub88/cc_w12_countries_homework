@@ -1,0 +1,15 @@
+#countries-container {
+  width: 66%;
+  height: 100vh;
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#countries-container p {
+  font-family: monospace;
+  font-size: 2em;
+}
