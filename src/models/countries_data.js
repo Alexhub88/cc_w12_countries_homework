@@ -1,46 +1,29 @@
 const PubSub = require('../helpers/pub_sub.js');
+const Request = require('../helpers/request.js');
 
 const CountriesData = function () {
-
-this.filters = [
-  {
-    filterName: 'all',
-    subfilters: ['all']
-  },
-  {
-    filterName: 'name',
-    subfilters: ['uk', 'france', 'germany', 'italy', 'spain', 'austria', 'greece', 'russia']
-  },
-  {
-    filterName: 'fullname',
-    subfilters: ['united?fullText=true', 'uk?fullText=true','france?fullText=true', 'germany?fullText=true', 'italy?fullText=true', 'spain?fullText=true', 'austria?fullText=true', 'greece?fullText=true', 'russia?fullText=true']
-  },
-  {
-    filterName: 'currency',
-    subfilters: ['cny', 'cop', 'bam', 'bdt', 'azn', 'hkd', 'jpy']
-  },
-  {
-    filterName: 'language',
-    subfilters: ['en', 'fr', 'de', 'it', 'pt', 'mo', 'mt', 'uk']
-  },
-  {
-    filterName: 'capital',
-    subfilters: ['london', 'paris', 'berlin', 'rome', 'madrid', 'vienna', 'athens', 'moscow' ]
-  },
-  {
-    filterName: 'region',
-    subfilters: ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania']
-  },
-  {
-    filterName: 'regionalbloc',
-    subfilters: ['ue','efta','caricom','pa','au','usan','eeu','al','asean','cais','cefta','nafta','saarc']
-  }
-  ];
+  this.currencies = ['cny', 'cop', 'bam', 'bdt', 'azn', 'hkd', 'jpy'];
+  this.capitals = ['london', 'paris', 'berlin', 'rome', 'madrid', 'vienna', 'athens', 'moscow'];
 }
 
 CountriesData.prototype.bindEvents = function () {
-
-  PubSub.publish("Categories:all-data-ready", this.filters);
+  PubSub.publish("Currencies:all-data-ready", this.currencies);
+  PubSub.publish("Capitals:all-data-ready", this.capitals);
 }
+
+CountriesData.prototype.setUpCurrencyListener = function () {
+    PubSub.subscribe('Currency:currency-selected', (event) => {
+      this.getCurrencyData(event.detail);
+ })
+}
+
+CountriesData.prototype.getCurrencyData = function (data) {
+  const url = `https://restcountries.eu/rest/v2/currency/${data}`;
+  const requestHelper = new Request(url);
+  requestHelper.get((data) => {
+  PubSub.publish('Currency:api-data', data)});
+ }
+
+
 
 module.exports = CountriesData;
