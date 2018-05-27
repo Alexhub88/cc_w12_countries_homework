@@ -15,4 +15,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const currencyView = new CurrencyView();
   currencyView.setUpListenerForData();
   currencyView.displayCurrencyDetails();
+
 });
